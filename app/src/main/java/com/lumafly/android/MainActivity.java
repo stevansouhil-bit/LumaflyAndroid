@@ -125,6 +125,13 @@ public class MainActivity extends Activity {
         choose.setOnClickListener(v -> chooseGameFolder());
         root.addView(choose);
 
+        Button createMods = button("📦 إنشاء مجلد Mods");
+        createMods.setOnClickListener(v -> {
+            createModsFolder();
+            showGameManager();
+        });
+        root.addView(createMods);
+
         String modsStatus = modsUri == null
                 ? "⚠️ مجلد Mods غير جاهز"
                 : "✅ مجلد Mods جاهز";
@@ -236,6 +243,22 @@ public class MainActivity extends Activity {
             );
         } catch (Exception e) {
             return null;
+        }
+    }
+
+
+    private void createModsFolder() {
+        if (gameUri == null) {
+            showMessage("Mods", "اختر مجلد اللعبة أولاً.");
+            return;
+        }
+
+        modsUri = findOrCreateModsFolder(gameUri);
+
+        if (modsUri != null) {
+            showMessage("Mods", "تم تجهيز مجلد Mods بنجاح.");
+        } else {
+            showMessage("Mods", "تعذر إنشاء مجلد Mods داخل المجلد المختار.");
         }
     }
 
