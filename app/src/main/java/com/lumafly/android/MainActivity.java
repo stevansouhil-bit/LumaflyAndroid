@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
         root.addView(mods);
         root.addView(settings);
 
-        game.setOnClickListener(v -> chooseGameFolder());
+        game.setOnClickListener(v -> showGameManager());
 
         mods.setOnClickListener(v -> loadModsFromGitHub());
 
@@ -105,6 +105,38 @@ public class MainActivity extends Activity {
 
         setContentView(root);
     }
+
+    private void showGameManager() {
+        setupRoot();
+
+        TextView title = text("🎮 إدارة اللعبة", 28);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        root.addView(title);
+
+        String gameStatus = gameUri == null
+                ? "⚠️ لم يتم اختيار مجلد اللعبة"
+                : "✅ مجلد اللعبة محدد";
+
+        root.addView(text(gameStatus, 17));
+
+        Button choose = button(gameUri == null
+                ? "📁 اختيار مجلد اللعبة"
+                : "🔄 تغيير مجلد اللعبة");
+        choose.setOnClickListener(v -> chooseGameFolder());
+        root.addView(choose);
+
+        String modsStatus = modsUri == null
+                ? "⚠️ مجلد Mods غير جاهز"
+                : "✅ مجلد Mods جاهز";
+        root.addView(text(modsStatus, 17));
+
+        Button back = button("← رجوع");
+        back.setOnClickListener(v -> showHome());
+        root.addView(back);
+
+        setContentView(root);
+    }
+
 
     private void chooseGameFolder() {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
