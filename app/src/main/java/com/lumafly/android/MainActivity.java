@@ -136,6 +136,7 @@ public class MainActivity extends Activity {
                 } catch (Exception ignored) {}
 
                 gameUri = uri;
+                modsUri = findOrCreateModsFolder(uri);
                 getPreferences(MODE_PRIVATE).edit()
                         .putString("game_uri", uri.toString())
                         .apply();
@@ -151,6 +152,61 @@ public class MainActivity extends Activity {
             }
         }
     }
+
+    private Uri findFolder(Uri parentUri, String folderName) {
+        try {
+            Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(
+                    parentUri,
+                    DocumentsContract.getTreeDocumentId(parentUri)
+            );
+
+            Cursor cursor = getContentResolver().query(
+                    childrenUri,
+                    new String[]{
+                            DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+                            DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                            DocumentsContract.Document.COLUMN_MIME_TYPE
+                    },
+                    null, null, null
+            );
+
+            if (cursor != null) {
+                try {
+                    while (cursor.moveToNext()) {
+                        String name = cursor.getString(1);
+                        String mime = cursor.getString(2);
+                        if (folderName.equals(name) &&
+                                DocumentsContract.Document.MIME_TYPE_DIR.equals(mime)) {
+                            String id = cursor.getString(0);
+                            return DocumentsContract.buildDocumentUriUsingTree(parentUri, id);
+                        }
+                    }
+                } finally {
+                    cursor.close();
+                }
+            }
+        } catch (Exception ignored) {}
+
+        return null;
+    }
+
+
+    private Uri findOrCreateModsFolder(Uri parentUri) {
+        try {
+            Uri existing = findFolder(parentUri, "Mods");
+            if (existing != null) return existing;
+
+            return DocumentsContract.createDocument(
+                    getContentResolver(),
+                    parentUri,
+                    DocumentsContract.Document.MIME_TYPE_DIR,
+                    "Mods"
+            );
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 
     private void installModFile(Uri sourceUri) {
         if (modsUri == null) {
