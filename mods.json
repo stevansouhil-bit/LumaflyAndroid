@@ -2,8 +2,8 @@
   "mods": [
     {
       "name": "Test Mod",
-      "description": "مود تجريبي لـ Lumafly Android",
-      "download": ""
+      "description": "مود تجريبي لاختبار التحميل",
+      "download": "https://raw.githubusercontent.com/stevansouhil-bit/LumaflyAndroid/main/TestMod.zip"
     }
   ]
 }
