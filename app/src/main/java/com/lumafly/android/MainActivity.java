@@ -313,6 +313,8 @@ public class MainActivity extends Activity {
 
         new Thread(() -> {
             HttpURLConnection connection = null;
+            java.io.InputStream input = null;
+            java.io.OutputStream output = null;
 
             try {
                 URL url = new URL(urlString);
@@ -325,10 +327,10 @@ public class MainActivity extends Activity {
                     throw new Exception("HTTP " + connection.getResponseCode());
                 }
 
-                String fileName = modName.replaceAll("[\\\\/:*?"<>|]", "_");
-                if (!fileName.toLowerCase().endsWith(".zip")) {
-                    fileName = fileName + ".zip";
-                }
+                String safeName = modName.replaceAll("[^a-zA-Z0-9._-]", "_");
+                final String fileName = safeName.toLowerCase().endsWith(".zip")
+                        ? safeName
+                        : safeName + ".zip";
 
                 Uri fileUri = DocumentsContract.createDocument(
                         getContentResolver(),
@@ -341,9 +343,8 @@ public class MainActivity extends Activity {
                     throw new Exception("تعذر إنشاء الملف.");
                 }
 
-                java.io.InputStream input = connection.getInputStream();
-                java.io.OutputStream output =
-                        getContentResolver().openOutputStream(fileUri);
+                input = connection.getInputStream();
+                output = getContentResolver().openOutputStream(fileUri);
 
                 if (output == null) {
                     throw new Exception("تعذر فتح الملف للكتابة.");
@@ -357,8 +358,6 @@ public class MainActivity extends Activity {
                 }
 
                 output.flush();
-                output.close();
-                input.close();
 
                 new Handler(Looper.getMainLooper()).post(() ->
                         showMessage(
@@ -374,13 +373,23 @@ public class MainActivity extends Activity {
                                 "تعذر تحميل المود."
                         )
                 );
+
             } finally {
+                try {
+                    if (output != null) output.close();
+                } catch (Exception ignored) {}
+
+                try {
+                    if (input != null) input.close();
+                } catch (Exception ignored) {}
+
                 if (connection != null) {
                     connection.disconnect();
                 }
             }
         }).start();
     }
+
 
 
     // MOD MANAGER
