@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,17 +17,16 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         showHome();
     }
 
     private TextView text(String value, float size) {
-        TextView view = new TextView(this);
-        view.setText(value);
-        view.setTextSize(size);
-        view.setTextColor(Color.WHITE);
-        view.setPadding(16, 16, 16, 16);
-        return view;
+        TextView v = new TextView(this);
+        v.setText(value);
+        v.setTextSize(size);
+        v.setTextColor(Color.WHITE);
+        v.setPadding(16, 16, 16, 16);
+        return v;
     }
 
     private Button button(String value) {
@@ -37,21 +37,22 @@ public class MainActivity extends Activity {
         return b;
     }
 
-    private void showHome() {
+    private void setupRoot() {
         root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setPadding(32, 40, 32, 32);
         root.setGravity(Gravity.CENTER_HORIZONTAL);
         root.setBackgroundColor(Color.rgb(25, 25, 30));
+    }
+
+    private void showHome() {
+        setupRoot();
 
         TextView title = text("Lumafly Android", 30);
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         title.setGravity(Gravity.CENTER);
 
-        TextView subtitle = text(
-                "Hollow Knight Mod Manager",
-                17
-        );
+        TextView subtitle = text("Hollow Knight Mod Manager", 17);
         subtitle.setGravity(Gravity.CENTER);
 
         root.addView(title);
@@ -65,26 +66,109 @@ public class MainActivity extends Activity {
         root.addView(mods);
         root.addView(settings);
 
-        game.setOnClickListener(v -> showMessage(
-                "Hollow Knight",
-                "لم يتم ربط مجلد اللعبة بعد."
-        ));
+        game.setOnClickListener(v -> showGame());
+        mods.setOnClickListener(v -> showMods());
+        settings.setOnClickListener(v -> showSettings());
 
-        mods.setOnClickListener(v -> showMessage(
-                "Mods",
-                "نظام المودات سيتم إضافته في المرحلة القادمة."
-        ));
+        setContentView(root);
+    }
 
-        settings.setOnClickListener(v -> showMessage(
-                "Settings",
-                "إعدادات Lumafly Android."
-        ));
+    private void showGame() {
+        setupRoot();
+
+        TextView title = text("🎮 Hollow Knight", 26);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        title.setGravity(Gravity.CENTER);
+
+        TextView info = text(
+                "مجلد اللعبة غير محدد.\n\n"
+                + "في المرحلة القادمة سنضيف اختيار مجلد Hollow Knight.",
+                17
+        );
+        info.setGravity(Gravity.CENTER);
+
+        Button choose = button("📁 اختيار مجلد اللعبة");
+        Button back = button("← رجوع");
+
+        root.addView(title);
+        root.addView(info);
+        root.addView(choose);
+        root.addView(back);
+
+        choose.setOnClickListener(v ->
+                showMessage("اختيار اللعبة",
+                        "سيتم إضافة Android Folder Picker في الخطوة القادمة.")
+        );
+
+        back.setOnClickListener(v -> showHome());
+
+        setContentView(root);
+    }
+
+    private void showMods() {
+        setupRoot();
+
+        TextView title = text("📦 Mods", 26);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        title.setGravity(Gravity.CENTER);
+
+        TextView status = text(
+                "لا توجد مودات مثبتة حاليًا.",
+                17
+        );
+        status.setGravity(Gravity.CENTER);
+
+        Button install = button("➕ Install Mod");
+        Button refresh = button("🔄 Refresh");
+        Button back = button("← رجوع");
+
+        root.addView(title);
+        root.addView(status);
+        root.addView(install);
+        root.addView(refresh);
+        root.addView(back);
+
+        install.setOnClickListener(v ->
+                showMessage("Install Mod",
+                        "هنا سنضيف اختيار ملف المود من الهاتف.")
+        );
+
+        refresh.setOnClickListener(v ->
+                showMessage("Mods",
+                        "تم تحديث قائمة المودات.")
+        );
+
+        back.setOnClickListener(v -> showHome());
+
+        setContentView(root);
+    }
+
+    private void showSettings() {
+        setupRoot();
+
+        TextView title = text("⚙ Settings", 26);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        title.setGravity(Gravity.CENTER);
+
+        TextView info = text(
+                "Lumafly Android\nVersion 0.1",
+                17
+        );
+        info.setGravity(Gravity.CENTER);
+
+        Button back = button("← رجوع");
+
+        root.addView(title);
+        root.addView(info);
+        root.addView(back);
+
+        back.setOnClickListener(v -> showHome());
 
         setContentView(root);
     }
 
     private void showMessage(String title, String message) {
-        root.removeAllViews();
+        setupRoot();
 
         TextView t = text(title, 26);
         t.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
@@ -99,5 +183,7 @@ public class MainActivity extends Activity {
         root.addView(t);
         root.addView(m);
         root.addView(back);
+
+        setContentView(root);
     }
 }
