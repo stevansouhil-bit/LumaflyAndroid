@@ -5,12 +5,15 @@ import android.os.Bundle;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.Gravity;
+import android.content.Intent;
+import android.net.Uri;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+    private static final int PICK_GAME_FOLDER = 1001;
     private LinearLayout root;
 
     @Override
@@ -66,28 +69,58 @@ public class MainActivity extends Activity {
         root.addView(mods);
         root.addView(settings);
 
-        game.setOnClickListener(v ->
-                showMessage(
-                        "Hollow Knight",
-                        "اختيار مجلد اللعبة سيتم إضافته لاحقًا."
-                )
-        );
+        game.setOnClickListener(v -> chooseGameFolder());
 
-        mods.setOnClickListener(v ->
-                showMessage(
-                        "Mods",
-                        "مدير المودات سيتم تطويره في المرحلة القادمة."
-                )
-        );
+        mods.setOnClickListener(v -> showMessage(
+                "Mods",
+                "مدير المودات سيتم تطويره في المرحلة القادمة."
+        ));
 
-        settings.setOnClickListener(v ->
-                showMessage(
-                        "Settings",
-                        "إعدادات Lumafly Android."
-                )
-        );
+        settings.setOnClickListener(v -> showMessage(
+                "Settings",
+                "إعدادات Lumafly Android."
+        ));
 
         setContentView(root);
+    }
+
+    private void chooseGameFolder() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+        intent.addFlags(
+                Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                Intent.FLAG_GRANT_WRITE_URI_PERMISSION |
+                Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION
+        );
+        startActivityForResult(intent, PICK_GAME_FOLDER);
+    }
+
+    @Override
+    protected void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data
+    ) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_GAME_FOLDER &&
+                resultCode == RESULT_OK &&
+                data != null) {
+
+            Uri uri = data.getData();
+
+            if (uri != null) {
+                getContentResolver().takePersistableUriPermission(
+                        uri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION |
+                        Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                );
+
+                showMessage(
+                        "Hollow Knight",
+                        "تم اختيار مجلد اللعبة بنجاح."
+                );
+            }
+        }
     }
 
     private void showMessage(String title, String message) {
