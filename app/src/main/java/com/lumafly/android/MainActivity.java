@@ -393,4 +393,22 @@ public class MainActivity extends Activity {
 
 
     // MOD MANAGER
+    private void showMessage(String title, String message) {
+        setupRoot();
+
+        TextView t = text(title, 26);
+        t.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+
+        TextView m = text(message, 17);
+
+        Button back = button("← رجوع");
+        back.setOnClickListener(v -> showHome());
+
+        root.addView(t);
+        root.addView(m);
+        root.addView(back);
+
+        setContentView(root);
+    }
+
 }
