@@ -235,12 +235,14 @@ public class MainActivity extends Activity {
             Uri existing = findFolder(parentUri, "Mods");
             if (existing != null) return existing;
 
-            return DocumentsContract.createDocument(
+            Uri newFolder = DocumentsContract.createDocument(
                     getContentResolver(),
                     parentUri,
                     DocumentsContract.Document.MIME_TYPE_DIR,
                     "Mods"
             );
+
+            return newFolder;
         } catch (Exception e) {
             return null;
         }
