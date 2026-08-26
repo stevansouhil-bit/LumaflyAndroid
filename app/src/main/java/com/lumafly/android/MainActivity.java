@@ -96,7 +96,7 @@ public class MainActivity extends Activity {
 
         game.setOnClickListener(v -> showGameManager());
 
-        mods.setOnClickListener(v -> loadModsFromGitHub());
+        mods.setOnClickListener(v -> { showMessage("Mods", "جاري تحميل قائمة المودات..."); loadModsFromGitHub(); });
 
         settings.setOnClickListener(v -> showMessage(
                 "Settings",
