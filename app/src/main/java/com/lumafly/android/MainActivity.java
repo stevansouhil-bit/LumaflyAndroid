@@ -382,7 +382,7 @@ public class MainActivity extends Activity {
     private void showGitHubMods(ArrayList<String> names, ArrayList<String> descriptions, ArrayList<String> downloadUrls) {
         setupRoot();
 
-        TextView title = text("🌐 GitHub Mods", 28);
+        TextView title = text("🌐 متجر المودات", 28);
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         root.addView(title);
 
@@ -394,7 +394,7 @@ public class MainActivity extends Activity {
                 name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
                 root.addView(name);
                 root.addView(text(descriptions.get(i), 15));
-                Button download = button("📥 تحميل");
+                Button download = button("📥 تحميل المود");
                 final int modIndex = i;
                 final String modName = names.get(modIndex);
                 download.setOnClickListener(v -> downloadMod(downloadUrls.get(modIndex), modName));
@@ -402,7 +402,7 @@ public class MainActivity extends Activity {
             }
         }
 
-        Button refresh = button("🔄 تحديث من GitHub");
+        Button refresh = button("🔄 تحديث المودات");
         refresh.setOnClickListener(v -> loadModsFromGitHub());
 
         Button back = button("← رجوع");
