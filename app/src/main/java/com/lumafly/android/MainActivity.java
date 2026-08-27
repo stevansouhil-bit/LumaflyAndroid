@@ -38,6 +38,7 @@ public class MainActivity extends Activity {
     private Uri gameUri;
     private Uri modsUri;
     private FrameLayout screen;
+    private boolean darkMode = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,7 @@ public class MainActivity extends Activity {
             gameUri = Uri.parse(saved);
         }
 
+        darkMode = getPreferences(MODE_PRIVATE).getBoolean("dark_mode", true);
         showHome();
     }
 
@@ -58,7 +60,7 @@ public class MainActivity extends Activity {
         TextView v = new TextView(this);
         v.setText(value);
         v.setTextSize(size);
-        v.setTextColor(Color.WHITE);
+        v.setTextColor(darkMode ? Color.WHITE : Color.BLACK);
         v.setGravity(Gravity.CENTER);
         v.setPadding(16, 16, 16, 16);
         return v;
@@ -88,7 +90,7 @@ public class MainActivity extends Activity {
         root.setOrientation(LinearLayout.VERTICAL);
         root.setGravity(Gravity.CENTER);
         root.setPadding(32, 32, 32, 32);
-        root.setBackgroundColor(Color.TRANSPARENT);
+        root.setBackgroundColor(darkMode ? Color.TRANSPARENT : Color.WHITE);
 
         screen.addView(root, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
@@ -134,6 +136,13 @@ public class MainActivity extends Activity {
         root.addView(title);
 
         root.addView(text("🎨 المظهر", 20));
+        Button themeButton = button(darkMode ? "🌙 الوضع الداكن" : "☀️ الوضع الفاتح");
+        themeButton.setOnClickListener(v -> {
+            darkMode = !darkMode;
+            getPreferences(MODE_PRIVATE).edit().putBoolean("dark_mode", darkMode).apply();
+            showSettings();
+        });
+        root.addView(themeButton);
         root.addView(text("واجهة Lumafly Android", 15));
 
         root.addView(text("📁 مجلد اللعبة", 20));
