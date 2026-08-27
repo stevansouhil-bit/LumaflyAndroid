@@ -93,7 +93,6 @@ public class MainActivity extends Activity {
         Button settings = button("⚙  Settings");
 
         root.addView(title);
-        root.addView(search);
         root.addView(subtitle);
         root.addView(game);
         root.addView(mods);
@@ -117,7 +116,6 @@ public class MainActivity extends Activity {
         TextView title = text("🎮 إدارة اللعبة", 28);
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         root.addView(title);
-        root.addView(search);
 
         String gameStatus = gameUri == null
                 ? "⚠️ لم يتم اختيار مجلد اللعبة"
@@ -394,7 +392,6 @@ public class MainActivity extends Activity {
         search.setSingleLine(true);
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         root.addView(title);
-        root.addView(search);
 
         LinearLayout modsContainer = new LinearLayout(this);
         modsContainer.setOrientation(LinearLayout.VERTICAL);
