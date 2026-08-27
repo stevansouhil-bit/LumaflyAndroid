@@ -1,0 +1,11 @@
+.gradle/
+build/
+local.properties
+*.apk
+*.aab
+app/build/
+test-mod/
+*.before_github
+*.broken
+*.save
+android-sdk/
