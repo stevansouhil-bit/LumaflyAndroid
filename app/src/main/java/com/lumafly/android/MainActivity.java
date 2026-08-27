@@ -121,10 +121,41 @@ public class MainActivity extends Activity {
 
         mods.setOnClickListener(v -> { showMessage("Mods", "جاري تحميل قائمة المودات..."); loadModsFromGitHub(); });
 
-        settings.setOnClickListener(v -> showMessage(
-                "Settings",
-                "إعدادات Lumafly Android."
+        settings.setOnClickListener(v -> showSettings());
+
+        setContentView(screen);
+    }
+
+    private void showSettings() {
+        setupRoot();
+
+        TextView title = text("⚙  Settings", 28);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        root.addView(title);
+
+        root.addView(text("🎨 المظهر", 20));
+        root.addView(text("واجهة Lumafly Android", 15));
+
+        root.addView(text("📁 مجلد اللعبة", 20));
+        root.addView(text(
+                gameUri == null ? "⚠️ لم يتم تحديد مجلد اللعبة" : "✅ مجلد اللعبة محدد",
+                15
         ));
+
+        root.addView(text("🌐 مصدر المودات", 20));
+        root.addView(text("GitHub", 15));
+
+        Button gameFolder = button("📁 تغيير مجلد اللعبة");
+        gameFolder.setOnClickListener(v -> chooseGameFolder());
+        root.addView(gameFolder);
+
+        Button mods = button("📦 فتح متجر المودات");
+        mods.setOnClickListener(v -> loadModsFromGitHub());
+        root.addView(mods);
+
+        Button back = button("← رجوع");
+        back.setOnClickListener(v -> showHome());
+        root.addView(back);
 
         setContentView(screen);
     }
