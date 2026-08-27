@@ -289,9 +289,14 @@ public class MainActivity extends Activity {
 
 
     private void installModFile(Uri sourceUri) {
+        if (modsUri == null && gameUri != null) {
+            modsUri = findOrCreateModsFolder(gameUri);
+        }
+
         if (modsUri == null) {
-            showMessage("تثبيت المود", "افتح Mod Manager واختر مجلد اللعبة أولاً.");
+            showMessage("تحميل المود", "اختر مجلد اللعبة وأنشئ مجلد Mods أولاً.");
             return;
+        }
         }
 
         try {
@@ -460,9 +465,14 @@ public class MainActivity extends Activity {
             return;
         }
 
+        if (modsUri == null && gameUri != null) {
+            modsUri = findOrCreateModsFolder(gameUri);
+        }
+
         if (modsUri == null) {
-            showMessage("تحميل المود", "افتح مدير المودات أولاً وأنشئ مجلد Mods.");
+            showMessage("تحميل المود", "اختر مجلد اللعبة وأنشئ مجلد Mods أولاً.");
             return;
+        }
         }
 
         new Thread(() -> {
