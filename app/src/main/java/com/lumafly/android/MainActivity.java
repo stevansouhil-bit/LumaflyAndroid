@@ -12,6 +12,8 @@ import android.provider.DocumentsContract;
 import android.database.Cursor;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.EditText;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,6 +37,7 @@ public class MainActivity extends Activity {
     private LinearLayout root;
     private Uri gameUri;
     private Uri modsUri;
+    private FrameLayout screen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,11 +73,27 @@ public class MainActivity extends Activity {
     }
 
     private void setupRoot() {
+        screen = new FrameLayout(this);
+
+        ImageView background = new ImageView(this);
+        background.setImageResource(R.drawable.background);
+        background.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        screen.addView(background, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+        ));
+
         root = new LinearLayout(this);
         root.setOrientation(LinearLayout.VERTICAL);
         root.setGravity(Gravity.CENTER);
         root.setPadding(32, 32, 32, 32);
-        root.setBackgroundColor(Color.rgb(25, 25, 30));
+        root.setBackgroundColor(Color.TRANSPARENT);
+
+        screen.addView(root, new FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+        ));
     }
 
     private void showHome() {
@@ -107,7 +126,7 @@ public class MainActivity extends Activity {
                 "إعدادات Lumafly Android."
         ));
 
-        setContentView(root);
+        setContentView(screen);
     }
 
     private void showGameManager() {
@@ -145,7 +164,7 @@ public class MainActivity extends Activity {
         back.setOnClickListener(v -> showHome());
         root.addView(back);
 
-        setContentView(root);
+        setContentView(screen);
     }
 
 
@@ -432,7 +451,7 @@ public class MainActivity extends Activity {
 
         root.addView(refresh);
         root.addView(back);
-        setContentView(root);
+        setContentView(screen);
     }
 
     private void downloadMod(String urlString, String modName) {
@@ -543,7 +562,7 @@ public class MainActivity extends Activity {
         root.addView(m);
         root.addView(back);
 
-        setContentView(root);
+        setContentView(screen);
     }
 
 }
