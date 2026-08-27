@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.Gravity;
+import android.view.View;
 import android.content.Intent;
 import android.net.Uri;
 import android.provider.DocumentsContract;
