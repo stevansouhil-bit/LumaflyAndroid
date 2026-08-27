@@ -297,7 +297,6 @@ public class MainActivity extends Activity {
             showMessage("تحميل المود", "اختر مجلد اللعبة وأنشئ مجلد Mods أولاً.");
             return;
         }
-        }
 
         try {
             String fileName = "mod_" + System.currentTimeMillis();
@@ -472,7 +471,6 @@ public class MainActivity extends Activity {
         if (modsUri == null) {
             showMessage("تحميل المود", "اختر مجلد اللعبة وأنشئ مجلد Mods أولاً.");
             return;
-        }
         }
 
         new Thread(() -> {
