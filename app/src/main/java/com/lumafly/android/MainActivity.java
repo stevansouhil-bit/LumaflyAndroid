@@ -11,6 +11,9 @@ import android.provider.DocumentsContract;
 import android.database.Cursor;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.EditText;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.TextView;
 import android.os.Handler;
 import android.os.Looper;
@@ -89,6 +92,7 @@ public class MainActivity extends Activity {
         Button settings = button("⚙  Settings");
 
         root.addView(title);
+        root.addView(search);
         root.addView(subtitle);
         root.addView(game);
         root.addView(mods);
@@ -112,6 +116,7 @@ public class MainActivity extends Activity {
         TextView title = text("🎮 إدارة اللعبة", 28);
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         root.addView(title);
+        root.addView(search);
 
         String gameStatus = gameUri == null
                 ? "⚠️ لم يتم اختيار مجلد اللعبة"
@@ -383,25 +388,44 @@ public class MainActivity extends Activity {
         setupRoot();
 
         TextView title = text("🌐 متجر المودات 🔍", 28);
+        EditText search = new EditText(this);
+        search.setHint("🔍 ابحث عن مود...");
+        search.setSingleLine(true);
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         root.addView(title);
+        root.addView(search);
 
+        LinearLayout modsContainer = new LinearLayout(this);
+        modsContainer.setOrientation(LinearLayout.VERTICAL);
+        root.addView(modsContainer);
         if (names.size() == 0) {
             root.addView(text("لا توجد مودات في قاعدة البيانات.", 16));
         } else {
             for (int i = 0; i < names.size(); i++) {
                 TextView name = text(names.get(i), 20);
                 name.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-                root.addView(name);
-                root.addView(text(descriptions.get(i), 15));
+                modsContainer.addView(name);
+                modsContainer.addView(text(descriptions.get(i), 15));
                 Button download = button("📥 تحميل المود");
                 final int modIndex = i;
                 final String modName = names.get(modIndex);
                 download.setOnClickListener(v -> downloadMod(downloadUrls.get(modIndex), modName));
-                root.addView(download);
+                modsContainer.addView(download);
             }
         }
 
+        search.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String query = s.toString().trim().toLowerCase();
+                for (int i = 0; i < modsContainer.getChildCount(); i += 3) {
+                    boolean visible = query.isEmpty() || names.get(i / 3).toLowerCase().contains(query);
+                    int end = Math.min(i + 3, modsContainer.getChildCount());
+                    for (int j = i; j < end; j++) modsContainer.getChildAt(j).setVisibility(visible ? View.VISIBLE : View.GONE);
+                }
+            }
+            @Override public void afterTextChanged(Editable s) {}
+        });
         Button refresh = button("🔄 تحديث المودات");
         refresh.setOnClickListener(v -> loadModsFromGitHub());
 
