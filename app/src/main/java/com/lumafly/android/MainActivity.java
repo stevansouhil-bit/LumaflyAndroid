@@ -382,7 +382,7 @@ public class MainActivity extends Activity {
     private void showGitHubMods(ArrayList<String> names, ArrayList<String> descriptions, ArrayList<String> downloadUrls) {
         setupRoot();
 
-        TextView title = text("🌐 متجر المودات", 28);
+        TextView title = text("🌐 متجر المودات 🔍", 28);
         title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
         root.addView(title);
 
