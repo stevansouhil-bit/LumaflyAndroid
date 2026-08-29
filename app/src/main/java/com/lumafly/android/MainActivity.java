@@ -121,7 +121,7 @@ public class MainActivity extends Activity {
 
         game.setOnClickListener(v -> showGameManager());
 
-        mods.setOnClickListener(v -> { showMessage("Mods", "جاري تحميل قائمة المودات..."); loadModsFromGitHub(); });
+        mods.setOnClickListener(v -> showModsMenu());
 
         settings.setOnClickListener(v -> showSettings());
 
@@ -445,6 +445,83 @@ public class MainActivity extends Activity {
             }
         }).start();
     }
+
+    private void showModsMenu() {
+        setupRoot();
+
+        TextView title = text("📦 Mods", 28);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        root.addView(title);
+
+        Button installed = button("🗂️ المودات المثبتة");
+        installed.setOnClickListener(v -> showInstalledMods());
+        root.addView(installed);
+
+        Button store = button("🌐 متجر المودات");
+        store.setOnClickListener(v -> loadModsFromGitHub());
+        root.addView(store);
+
+        Button back = button("← رجوع");
+        back.setOnClickListener(v -> showHome());
+        root.addView(back);
+
+        setContentView(screen);
+    }
+
+    private void showInstalledMods() {
+        setupRoot();
+
+        TextView title = text("🗂️ المودات المثبتة", 26);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        root.addView(title);
+
+        if (modsUri == null && gameUri != null) {
+            modsUri = findOrCreateModsFolder(gameUri);
+        }
+
+        if (modsUri == null) {
+            root.addView(text("⚠️ اختر مجلد اللعبة أولاً.", 17));
+        } else {
+            try {
+                Uri childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(
+                        modsUri,
+                        DocumentsContract.getTreeDocumentId(modsUri)
+                );
+
+                Cursor cursor = getContentResolver().query(
+                        childrenUri,
+                        new String[]{
+                                DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+                                DocumentsContract.Document.COLUMN_MIME_TYPE
+                        },
+                        null, null, null
+                );
+
+                boolean found = false;
+                if (cursor != null) {
+                    while (cursor.moveToNext()) {
+                        found = true;
+                        String name = cursor.getString(0);
+                        root.addView(text("📦 " + name, 17));
+                    }
+                    cursor.close();
+                }
+
+                if (!found) {
+                    root.addView(text("لا توجد مودات مثبتة.", 17));
+                }
+            } catch (Exception e) {
+                root.addView(text("تعذر قراءة مجلد Mods.", 17));
+            }
+        }
+
+        Button back = button("← رجوع");
+        back.setOnClickListener(v -> showModsMenu());
+        root.addView(back);
+
+        setContentView(screen);
+    }
+
 
     private void showGitHubMods(ArrayList<String> names, ArrayList<String> descriptions, ArrayList<String> downloadUrls) {
         setupRoot();
